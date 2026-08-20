@@ -22,7 +22,7 @@ import { Component, Input } from '@angular/core';
     }
     .spinner-container p {
       margin-top: 16px;
-      color: #5b6270;
+      color: var(--rr-slate);
       font-size: 0.9rem;
     }
     mat-spinner {
