@@ -60,6 +60,13 @@ $rr-theme: mat.define-light-theme((
   --rr-no-data: #8a909c;
   --rr-info: #0073cf;
 
+  /* Non-semantic chart series (never used to convey state) */
+  --rr-series-1: #10069f;
+  --rr-series-2: #4a3fd1;
+  --rr-series-3: #7d76e0;
+  --rr-series-4: #a9a4ec;
+  --rr-series-5: #cfccf6;
+
   /* Spacing */
   --spacing-xs: 4px;
   --spacing-sm: 8px;

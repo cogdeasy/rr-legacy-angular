@@ -22,7 +22,13 @@ interface DonutSegment {
 }
 
 const DONUT_CIRCUMFERENCE = 2 * Math.PI * 60;
-const SEGMENT_COLOURS = ['#10069f', '#4a3fd1', '#0073cf', '#007a53', '#d98200'];
+const SEGMENT_COLOURS = [
+  'var(--rr-series-1)',
+  'var(--rr-series-2)',
+  'var(--rr-series-3)',
+  'var(--rr-series-4)',
+  'var(--rr-series-5)'
+];
 
 @Component({
   selector: 'app-shop-visit-planner',
