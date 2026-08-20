@@ -22,8 +22,8 @@ First compile takes ~30-60s. Wait for `Compiled successfully` before driving the
 
 Auth is mocked in `src/app/shared/services/auth.service.ts`:
 
-- **Any** email + **any** non-empty ${DB_PASSWORD} is accepted after a ~1.2s artificial delay.
-- Submitting with either field empty shows `Enter your Rolls-Royce email and ${DB_PASSWORD}`.
+- **Any** email + **any** non-empty password is accepted after a ~1.2s artificial delay.
+- Submitting with either field empty shows `Enter your Rolls-Royce email and password`.
 - The session is persisted to `localStorage` under key `rr_portal_auth`.
 
 To skip the login page in a fresh browser, seed that key directly, or just log in through the
