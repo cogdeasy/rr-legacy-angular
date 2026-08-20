@@ -1,0 +1,148 @@
+<div class="page-header">
+  <div>
+    <span class="micro-label">Engine explorer</span>
+    <h1>Managed engine register</h1>
+    <p>Search the fleet, then open an engine for module condition detail.</p>
+  </div>
+  <button mat-stroked-button class="pill-cta" (click)="clearFilters()">
+    <mat-icon>filter_alt_off</mat-icon> Clear filters
+  </button>
+</div>
+
+<section class="panel filter-bar">
+  <div class="search-field">
+    <mat-icon>search</mat-icon>
+    <input
+      type="text"
+      name="searchTerm"
+      placeholder="ESN, operator, tail number or hub"
+      [(ngModel)]="searchTerm">
+  </div>
+
+  <div class="filter-group">
+    <span class="micro-label">State</span>
+    <div class="chip-row">
+      <button
+        *ngFor="let state of states"
+        class="chip"
+        [class.selected]="selectedState === state"
+        (click)="selectedState = state">
+        {{ state }}
+      </button>
+    </div>
+  </div>
+
+  <div class="filter-group">
+    <span class="micro-label">Family</span>
+    <div class="chip-row">
+      <button
+        *ngFor="let family of families"
+        class="chip"
+        [class.selected]="selectedFamily === family"
+        (click)="selectedFamily = family">
+        {{ family }}
+      </button>
+    </div>
+  </div>
+</section>
+
+<app-loading-spinner [isLoading]="isLoading" message="Loading engine register…"></app-loading-spinner>
+
+<p class="result-count" *ngIf="!isLoading">
+  {{ filteredEngines.length }} of {{ engines.length }} engines
+</p>
+
+<section class="engine-list" *ngIf="!isLoading">
+  <article class="panel engine-card" *ngFor="let engine of filteredEngines">
+    <header class="engine-head" (click)="toggleEngine(engine.esn)">
+      <div class="engine-identity">
+        <mat-icon class="location-icon">{{ locationIcon(engine.location) }}</mat-icon>
+        <div>
+          <strong>{{ engine.esn }}</strong>
+          <span class="engine-sub">{{ engine.family }} · {{ engine.operator }} · {{ engine.tailNumber }}</span>
+        </div>
+      </div>
+
+      <div class="engine-metrics">
+        <div class="metric">
+          <span class="micro-label">EGT margin</span>
+          <strong class="numeric">{{ engine.egtMargin }} degC</strong>
+        </div>
+        <div class="metric">
+          <span class="micro-label">Vibration</span>
+          <strong class="numeric">{{ engine.vibrationIps }} ips</strong>
+        </div>
+        <div class="metric">
+          <span class="micro-label">Cycles to SV</span>
+          <strong class="numeric">{{ engine.cyclesToShopVisit }}</strong>
+        </div>
+        <span class="status-pill" [ngClass]="engine.state | stateClass">{{ engine.state }}</span>
+        <mat-icon class="chevron">{{ expandedEsn === engine.esn ? 'expand_less' : 'expand_more' }}</mat-icon>
+      </div>
+    </header>
+
+    <div class="engine-detail" *ngIf="expandedEsn === engine.esn">
+      <div class="detail-facts">
+        <div>
+          <span class="micro-label">Location</span>
+          <p>{{ engine.location }} · {{ engine.hub }}</p>
+        </div>
+        <div>
+          <span class="micro-label">Flight hours</span>
+          <p class="numeric">{{ engine.flightHours | engineHours }}</p>
+        </div>
+        <div>
+          <span class="micro-label">Flight cycles</span>
+          <p class="numeric">{{ engine.flightCycles | engineHours: 'cycles' }}</p>
+        </div>
+        <div>
+          <span class="micro-label">Oil consumption</span>
+          <p class="numeric">{{ engine.oilConsumptionLph }} l/hr</p>
+        </div>
+        <div>
+          <span class="micro-label">Last flight</span>
+          <p>{{ engine.lastFlight | date: 'dd MMM yyyy HH:mm' }}</p>
+        </div>
+      </div>
+
+      <h3>Module condition</h3>
+      <table class="rr-table">
+        <thead>
+          <tr>
+            <th>Module</th>
+            <th>State</th>
+            <th>Cycles since overhaul</th>
+            <th>Life used</th>
+            <th>Engineering note</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let module of engine.modules">
+            <td>{{ module.module }}</td>
+            <td><span class="status-pill" [ngClass]="module.state | stateClass">{{ module.state }}</span></td>
+            <td class="numeric">{{ module.cyclesSinceOverhaul }} / {{ module.limitCycles }}</td>
+            <td>
+              <div class="usage-bar">
+                <span
+                  [style.width.%]="moduleUsagePct(module.cyclesSinceOverhaul, module.limitCycles)"
+                  [ngClass]="module.state | stateClass"></span>
+              </div>
+            </td>
+            <td class="note-cell">{{ module.note }}</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="detail-actions">
+        <button mat-stroked-button class="pill-cta" routerLink="/health-trending">View trend</button>
+        <button mat-flat-button color="primary" class="pill-cta" routerLink="/shop-visit-planner">
+          Plan shop visit
+        </button>
+      </div>
+    </div>
+  </article>
+
+  <p class="empty-state" *ngIf="filteredEngines.length === 0">
+    No engines match the current filters.
+  </p>
+</section>

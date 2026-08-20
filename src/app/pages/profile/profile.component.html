@@ -1,0 +1,158 @@
+<div class="page-header">
+  <div>
+    <span class="micro-label">Profile</span>
+    <h1>Your operations account</h1>
+    <p>Contact details, delegated authority and alerting thresholds.</p>
+  </div>
+</div>
+
+<div class="saved-banner panel" *ngIf="savedMessage">
+  <mat-icon>check_circle_outline</mat-icon>
+  <span>{{ savedMessage }}</span>
+</div>
+
+<div class="profile-layout" *ngIf="user">
+  <aside class="panel identity-card">
+    <div class="avatar">{{ initials }}</div>
+    <h2>{{ user.firstName }} {{ user.lastName }}</h2>
+    <span class="role">{{ user.role }}</span>
+    <span class="status-pill state-nominal">{{ user.authorityLevel }}</span>
+
+    <dl class="identity-facts">
+      <div>
+        <dt class="micro-label">Employee ID</dt>
+        <dd class="numeric">{{ user.id }}</dd>
+      </div>
+      <div>
+        <dt class="micro-label">Base</dt>
+        <dd>{{ user.baseLocation }}</dd>
+      </div>
+      <div>
+        <dt class="micro-label">With Rolls-Royce since</dt>
+        <dd>{{ user.employeeSince | date: 'MMMM yyyy' }}</dd>
+      </div>
+      <div>
+        <dt class="micro-label">Last sign in</dt>
+        <dd>{{ user.lastLogin | date: 'dd MMM yyyy, HH:mm' }}</dd>
+      </div>
+    </dl>
+
+    <span class="micro-label">Fleets covered</span>
+    <div class="fleet-chips">
+      <span class="fleet-chip" *ngFor="let fleet of user.fleetsCovered">{{ fleet }}</span>
+    </div>
+  </aside>
+
+  <section class="profile-main">
+    <div class="panel">
+      <header class="section-head">
+        <span class="micro-label">Contact details</span>
+        <button mat-stroked-button class="pill-cta" *ngIf="!isEditing" (click)="startEditing()">
+          <mat-icon>edit</mat-icon> Edit
+        </button>
+      </header>
+
+      <dl class="detail-grid" *ngIf="!isEditing">
+        <div>
+          <dt class="micro-label">First name</dt>
+          <dd>{{ user.firstName }}</dd>
+        </div>
+        <div>
+          <dt class="micro-label">Last name</dt>
+          <dd>{{ user.lastName }}</dd>
+        </div>
+        <div>
+          <dt class="micro-label">Email</dt>
+          <dd>{{ user.email }}</dd>
+        </div>
+        <div>
+          <dt class="micro-label">Phone</dt>
+          <dd>{{ user.phone }}</dd>
+        </div>
+        <div class="wide">
+          <dt class="micro-label">Base location</dt>
+          <dd>{{ user.baseLocation }}</dd>
+        </div>
+      </dl>
+
+      <form class="detail-grid" *ngIf="isEditing" (ngSubmit)="saveProfile()">
+        <label class="field">
+          <span class="field-label">First name</span>
+          <input type="text" name="firstName" [(ngModel)]="draft.firstName">
+        </label>
+        <label class="field">
+          <span class="field-label">Last name</span>
+          <input type="text" name="lastName" [(ngModel)]="draft.lastName">
+        </label>
+        <label class="field">
+          <span class="field-label">Email</span>
+          <input type="email" name="email" [(ngModel)]="draft.email">
+        </label>
+        <label class="field">
+          <span class="field-label">Phone</span>
+          <input type="text" name="phone" [(ngModel)]="draft.phone">
+        </label>
+        <label class="field wide">
+          <span class="field-label">Base location</span>
+          <input type="text" name="baseLocation" [(ngModel)]="draft.baseLocation">
+        </label>
+
+        <div class="form-actions wide">
+          <button mat-button type="button" (click)="cancelEditing()">Cancel</button>
+          <button mat-flat-button color="primary" class="pill-cta" type="submit" [disabled]="isSaving">
+            {{ isSaving ? 'Saving…' : 'Save changes' }}
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <div class="panel">
+      <span class="micro-label">Alerting preferences</span>
+
+      <label class="toggle-row">
+        <input type="checkbox" name="alertEmails" [(ngModel)]="preferences.alertEmails">
+        <span>
+          <strong>Engine alert emails</strong>
+          <span class="toggle-note">Send an email whenever a covered engine moves to act now.</span>
+        </span>
+      </label>
+
+      <label class="toggle-row">
+        <input type="checkbox" name="dailyFleetDigest" [(ngModel)]="preferences.dailyFleetDigest">
+        <span>
+          <strong>Daily fleet digest</strong>
+          <span class="toggle-note">06:00 summary of downlink coverage and margin movement.</span>
+        </span>
+      </label>
+
+      <label class="toggle-row">
+        <input type="checkbox" name="aogPager" [(ngModel)]="preferences.aogPager">
+        <span>
+          <strong>AOG pager</strong>
+          <span class="toggle-note">Page immediately for aircraft on ground events.</span>
+        </span>
+      </label>
+
+      <div class="threshold-row">
+        <label class="field">
+          <span class="field-label">EGT margin alert threshold (degC)</span>
+          <input type="number" name="egtMarginThreshold" min="0" max="60"
+            [(ngModel)]="preferences.egtMarginThreshold">
+        </label>
+        <label class="field">
+          <span class="field-label">Default fleet</span>
+          <select name="defaultFleet" [(ngModel)]="preferences.defaultFleet">
+            <option *ngFor="let fleet of user.fleetsCovered" [value]="fleet">{{ fleet }}</option>
+          </select>
+        </label>
+      </div>
+
+      <div class="form-actions">
+        <button mat-flat-button color="primary" class="pill-cta" (click)="savePreferences()"
+          [disabled]="isSaving">
+          {{ isSaving ? 'Saving…' : 'Save preferences' }}
+        </button>
+      </div>
+    </div>
+  </section>
+</div>

@@ -1,0 +1,63 @@
+<div class="login-page">
+  <section class="login-hero hero-gradient">
+    <span class="hero-mark">RR</span>
+    <h1>Engine Operations Portal</h1>
+    <p>
+      Fleet health signals, prognostics and MRO execution for every managed engine, in one
+      controlled workspace.
+    </p>
+    <ul class="hero-points">
+      <li><mat-icon>insights</mat-icon> Continuous EHM downlink from 8 managed engines</li>
+      <li><mat-icon>engineering</mat-icon> Workscope planning with shop capacity awareness</li>
+      <li><mat-icon>verified</mat-icon> Airworthiness evidence retained against every decision</li>
+    </ul>
+  </section>
+
+  <section class="login-form-panel">
+    <div class="form-card">
+      <span class="micro-label">Secure sign-in</span>
+      <h2>Sign in</h2>
+      <p class="form-intro">Use your Rolls-Royce network account.</p>
+
+      <form (ngSubmit)="onSubmit()" #loginForm="ngForm" novalidate>
+        <label class="field-label" for="email">Email address</label>
+        <input
+          id="email"
+          name="email"
+          type="email"
+          class="text-input"
+          placeholder="first.last@rolls-royce.com"
+          [(ngModel)]="email"
+          autocomplete="username">
+
+        <label class="field-label" for="password">Password</label>
+        <input
+          id="password"
+          name="password"
+          type="password"
+          class="text-input"
+          placeholder="Enter your password"
+          [(ngModel)]="password"
+          autocomplete="current-password">
+
+        <p class="error-message" *ngIf="errorMessage">
+          <mat-icon>error_outline</mat-icon>{{ errorMessage }}
+        </p>
+
+        <button
+          mat-flat-button
+          color="primary"
+          class="pill-cta submit-button"
+          type="submit"
+          [disabled]="isLoading">
+          <span *ngIf="!isLoading">Sign in</span>
+          <span *ngIf="isLoading">Signing in…</span>
+        </button>
+      </form>
+
+      <p class="assist">
+        Locked out? Contact the operations service desk on extension 4400.
+      </p>
+    </div>
+  </section>
+</div>

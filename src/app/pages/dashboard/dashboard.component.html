@@ -1,0 +1,124 @@
+<app-loading-spinner
+  [isLoading]="isLoading"
+  message="Loading fleet health…"></app-loading-spinner>
+
+<div *ngIf="!isLoading">
+  <div class="page-header">
+    <div>
+      <span class="micro-label">Fleet dashboard</span>
+      <h1>Good morning, {{ currentUser?.firstName }}</h1>
+      <p>Managed engine status as of the last EHM downlink.</p>
+    </div>
+    <div class="header-actions">
+      <button mat-stroked-button class="pill-cta" routerLink="/health-trending">
+        <mat-icon>show_chart</mat-icon> Health trending
+      </button>
+      <button mat-flat-button color="primary" class="pill-cta" routerLink="/work-orders">
+        <mat-icon>add</mat-icon> Raise work order
+      </button>
+    </div>
+  </div>
+
+  <section class="stat-grid" *ngIf="stats">
+    <div class="panel stat-card">
+      <span class="micro-label">Engines managed</span>
+      <strong class="numeric">{{ stats.enginesManaged }}</strong>
+      <span class="stat-note">{{ stats.onWing }} on wing · {{ stats.inShopVisit }} in shop visit</span>
+    </div>
+    <div class="panel stat-card">
+      <span class="micro-label">Act now</span>
+      <strong class="numeric act-now">{{ stats.actNow }}</strong>
+      <span class="stat-note">{{ stats.watchlist }} further engines on the watchlist</span>
+    </div>
+    <div class="panel stat-card">
+      <span class="micro-label">Fleet availability</span>
+      <strong class="numeric">{{ stats.availabilityPct }}%</strong>
+      <span class="stat-note">Contracted floor is 92.0%</span>
+    </div>
+    <div class="panel stat-card">
+      <span class="micro-label">Mean EGT margin</span>
+      <strong class="numeric">{{ stats.meanEgtMargin }} degC</strong>
+      <span class="stat-note">{{ stats.aogOpen }} AOG work order open</span>
+    </div>
+  </section>
+
+  <section class="content-grid">
+    <div class="panel-flush">
+      <header class="panel-head">
+        <div>
+          <span class="micro-label">Engines needing attention</span>
+          <h2>Ranked by remaining EGT margin</h2>
+        </div>
+        <a routerLink="/engine-explorer">Open engine explorer</a>
+      </header>
+      <table class="rr-table">
+        <thead>
+          <tr>
+            <th>Engine</th>
+            <th>Operator</th>
+            <th>State</th>
+            <th>EGT margin</th>
+            <th>Cycles to shop visit</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let engine of attentionEngines">
+            <td>
+              <strong>{{ engine.esn }}</strong>
+              <span class="cell-sub">{{ engine.family }} · {{ engine.tailNumber }}</span>
+            </td>
+            <td>{{ engine.operator }}</td>
+            <td><span class="status-pill" [ngClass]="engine.state | stateClass">{{ engine.state }}</span></td>
+            <td>
+              <div class="margin-cell">
+                <span class="numeric">{{ engine.egtMargin }} degC</span>
+                <div class="margin-bar">
+                  <span [style.width.%]="marginBarWidth(engine)" [ngClass]="engine.state | stateClass"></span>
+                </div>
+              </div>
+            </td>
+            <td class="numeric">{{ engine.cyclesToShopVisit }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="panel alerts-panel">
+      <span class="micro-label">Open alerts</span>
+      <h2>Signals raised in the last 10 days</h2>
+      <article class="alert-item" *ngFor="let alert of alerts">
+        <div class="alert-head">
+          <span class="status-pill" [ngClass]="alert.state | stateClass">{{ alert.signal }}</span>
+          <span class="alert-time">{{ alert.detected | date: 'dd MMM HH:mm' }}</span>
+        </div>
+        <strong>{{ alert.esn }} · {{ alert.operator }}</strong>
+        <p>{{ alert.summary }}</p>
+        <p class="alert-action"><mat-icon>arrow_forward</mat-icon>{{ alert.recommendedAction }}</p>
+      </article>
+    </div>
+  </section>
+
+  <section class="quick-actions">
+    <a class="panel action-card" routerLink="/shop-visit-planner">
+      <mat-icon>build_circle</mat-icon>
+      <div>
+        <strong>Plan a shop visit</strong>
+        <span>Price a workscope and see the turnaround impact.</span>
+      </div>
+    </a>
+    <a class="panel action-card" routerLink="/health-trending">
+      <mat-icon>show_chart</mat-icon>
+      <div>
+        <strong>Review a trend</strong>
+        <span>Twelve months of margin, vibration and oil signals.</span>
+      </div>
+    </a>
+    <a class="panel action-card" routerLink="/work-orders">
+      <mat-icon>assignment</mat-icon>
+      <div>
+        <strong>Track execution</strong>
+        <span>Work orders across line stations and overhaul bases.</span>
+      </div>
+    </a>
+  </section>
+</div>

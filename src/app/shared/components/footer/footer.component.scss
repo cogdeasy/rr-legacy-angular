@@ -1,0 +1,26 @@
+.app-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-lg) 0 var(--spacing-md);
+  margin-top: var(--spacing-xl);
+  border-top: 1px solid var(--rr-hairline);
+  color: var(--rr-mist);
+  font-size: 0.75rem;
+}
+
+.footer-links {
+  display: flex;
+  gap: var(--spacing-md);
+
+  a {
+    color: var(--rr-slate);
+    text-decoration: none;
+
+    &:hover {
+      color: var(--rr-blue);
+    }
+  }
+}

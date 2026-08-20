@@ -1,0 +1,258 @@
+.confirmation {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  margin-bottom: var(--spacing-md);
+  border-left: 3px solid var(--rr-nominal);
+  color: var(--rr-ink);
+
+  mat-icon {
+    color: var(--rr-nominal);
+  }
+}
+
+.stat-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--spacing-md);
+  margin-bottom: var(--spacing-md);
+}
+
+.stat {
+  strong {
+    display: block;
+    margin-top: var(--spacing-xs);
+    font-size: 1.9rem;
+    font-weight: 500;
+
+    &.act {
+      color: var(--rr-act-now);
+    }
+
+    &.watch {
+      color: var(--rr-watchlist);
+    }
+  }
+}
+
+.raise-form {
+  margin-bottom: var(--spacing-md);
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--spacing-md);
+  margin-top: var(--spacing-sm);
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+
+  &.wide {
+    margin-top: var(--spacing-md);
+  }
+
+  input,
+  select,
+  textarea {
+    padding: 10px 12px;
+    border: 1px solid var(--rr-hairline);
+    border-radius: var(--radius-sm);
+    font-family: var(--font-primary);
+    font-size: 0.9rem;
+    color: var(--rr-ink);
+    background: var(--rr-white);
+    resize: vertical;
+
+    &:focus {
+      outline: none;
+      border-color: var(--rr-blue);
+    }
+  }
+}
+
+.field-label {
+  font-size: 0.74rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--rr-mist);
+}
+
+.field-error {
+  font-size: 0.74rem;
+  color: var(--rr-act-now);
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: var(--spacing-md);
+}
+
+.filter-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-md);
+  margin-bottom: var(--spacing-md);
+  flex-wrap: wrap;
+}
+
+.search-field {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  flex: 1;
+  min-width: 260px;
+  border: 1px solid var(--rr-hairline);
+  border-radius: var(--radius-sm);
+  padding: 6px 12px;
+
+  mat-icon {
+    color: var(--rr-mist);
+  }
+
+  input {
+    flex: 1;
+    border: none;
+    outline: none;
+    font-family: var(--font-primary);
+    font-size: 0.9rem;
+    color: var(--rr-ink);
+  }
+}
+
+.chip-row {
+  display: flex;
+  gap: var(--spacing-xs);
+  flex-wrap: wrap;
+}
+
+.chip {
+  border: 1px solid var(--rr-hairline);
+  background: var(--rr-white);
+  border-radius: 999px;
+  padding: 6px 14px;
+  font-family: var(--font-primary);
+  font-size: 0.8rem;
+  color: var(--rr-slate);
+  cursor: pointer;
+
+  &.selected {
+    border-color: var(--rr-blue);
+    color: var(--rr-blue);
+    background: rgba(16, 6, 159, 0.05);
+    font-weight: 500;
+  }
+}
+
+.order-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.order-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--spacing-md);
+  cursor: pointer;
+
+  h2 {
+    margin: 2px 0 4px;
+    font-size: 1.05rem;
+  }
+}
+
+.order-sub {
+  font-size: 0.8rem;
+  color: var(--rr-slate);
+}
+
+.order-meta {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+
+  mat-icon {
+    color: var(--rr-mist);
+  }
+}
+
+.due {
+  font-size: 0.78rem;
+  color: var(--rr-mist);
+}
+
+.order-progress {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  margin-top: var(--spacing-md);
+}
+
+.progress-track {
+  flex: 1;
+  height: 6px;
+  border-radius: 3px;
+  background: var(--rr-pale);
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: var(--rr-blue);
+}
+
+.progress-value {
+  font-size: 0.76rem;
+  color: var(--rr-slate);
+  white-space: nowrap;
+}
+
+.order-detail {
+  margin-top: var(--spacing-md);
+  padding-top: var(--spacing-md);
+  border-top: 1px solid var(--rr-hairline);
+}
+
+.detail-facts {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--spacing-sm);
+  margin-bottom: var(--spacing-md);
+
+  strong {
+    display: block;
+    font-weight: 500;
+  }
+}
+
+.empty-cell {
+  color: var(--rr-mist);
+  text-align: center;
+}
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-xs);
+  color: var(--rr-mist);
+
+  p {
+    margin: 0;
+  }
+}
+
+@media (max-width: 1100px) {
+  .stat-row,
+  .form-grid,
+  .detail-facts {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}

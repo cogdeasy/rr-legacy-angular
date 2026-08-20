@@ -1,0 +1,204 @@
+<div class="page-header">
+  <div>
+    <span class="micro-label">Work orders</span>
+    <h1>Maintenance execution</h1>
+    <p>Track raised work, chase parts, and route new findings to a facility.</p>
+  </div>
+  <button mat-flat-button color="primary" class="pill-cta" (click)="toggleForm()">
+    <mat-icon>{{ showForm ? 'close' : 'add' }}</mat-icon>
+    {{ showForm ? 'Cancel' : 'Raise work order' }}
+  </button>
+</div>
+
+<div class="confirmation panel" *ngIf="submittedId">
+  <mat-icon>task_alt</mat-icon>
+  <span>{{ submittedId }} raised and routed to the facility planning queue.</span>
+</div>
+
+<app-loading-spinner [isLoading]="isLoading" message="Loading work orders…"></app-loading-spinner>
+
+<div *ngIf="!isLoading">
+  <div class="stat-row">
+    <div class="panel stat">
+      <span class="micro-label">Open</span>
+      <strong class="numeric">{{ openCount }}</strong>
+    </div>
+    <div class="panel stat">
+      <span class="micro-label">AOG</span>
+      <strong class="numeric act">{{ aogCount }}</strong>
+    </div>
+    <div class="panel stat">
+      <span class="micro-label">Awaiting parts</span>
+      <strong class="numeric watch">{{ awaitingPartsCount }}</strong>
+    </div>
+    <div class="panel stat">
+      <span class="micro-label">Total raised</span>
+      <strong class="numeric">{{ workOrders.length }}</strong>
+    </div>
+  </div>
+
+  <form class="panel raise-form" *ngIf="showForm" [formGroup]="form" (ngSubmit)="onSubmit()">
+    <span class="micro-label">New work order</span>
+
+    <div class="form-grid">
+      <label class="field">
+        <span class="field-label">Engine serial number</span>
+        <select formControlName="esn">
+          <option value="" disabled>Select an engine</option>
+          <option *ngFor="let engine of engines" [value]="engine.esn">
+            {{ engine.esn }} — {{ engine.operator }}
+          </option>
+        </select>
+        <span class="field-error" *ngIf="hasError('esn')">Select the engine this work applies to.</span>
+      </label>
+
+      <label class="field">
+        <span class="field-label">Title</span>
+        <input type="text" formControlName="title" placeholder="e.g. HP turbine borescope rectification">
+        <span class="field-error" *ngIf="hasError('title')">Give the work order a descriptive title.</span>
+      </label>
+
+      <label class="field">
+        <span class="field-label">Priority</span>
+        <select formControlName="priority">
+          <option *ngFor="let priority of priorities" [value]="priority">{{ priority }}</option>
+        </select>
+      </label>
+
+      <label class="field">
+        <span class="field-label">Facility</span>
+        <select formControlName="facility">
+          <option *ngFor="let facility of facilities" [value]="facility">{{ facility }}</option>
+        </select>
+      </label>
+
+      <label class="field">
+        <span class="field-label">Due date</span>
+        <input type="date" formControlName="dueOn">
+        <span class="field-error" *ngIf="hasError('dueOn')">A due date is required.</span>
+      </label>
+
+      <label class="field">
+        <span class="field-label">Raised by</span>
+        <input type="text" formControlName="requesterName">
+        <span class="field-error" *ngIf="hasError('requesterName')">Enter the requester name.</span>
+      </label>
+
+      <label class="field">
+        <span class="field-label">Contact email</span>
+        <input type="email" formControlName="requesterEmail">
+        <span class="field-error" *ngIf="hasError('requesterEmail')">Enter a valid contact email.</span>
+      </label>
+    </div>
+
+    <label class="field wide">
+      <span class="field-label">Findings</span>
+      <textarea rows="3" formControlName="findings"
+        placeholder="Borescope, downlink or line findings supporting this work order"></textarea>
+      <span class="field-error" *ngIf="hasError('findings')">Record the supporting findings.</span>
+    </label>
+
+    <label class="field wide">
+      <span class="field-label">Requested tasks (one per line)</span>
+      <textarea rows="4" formControlName="requestedTasks"
+        placeholder="Remove and replace HPT stage 1 nozzle guide vanes"></textarea>
+      <span class="field-error" *ngIf="hasError('requestedTasks')">List at least one task.</span>
+    </label>
+
+    <div class="form-actions">
+      <button mat-flat-button color="primary" class="pill-cta" type="submit" [disabled]="isSubmitting">
+        {{ isSubmitting ? 'Raising…' : 'Raise work order' }}
+      </button>
+    </div>
+  </form>
+
+  <div class="filter-bar panel">
+    <div class="search-field">
+      <mat-icon>search</mat-icon>
+      <input type="text" name="searchTerm" [(ngModel)]="searchTerm"
+        placeholder="Search by work order, ESN, operator or title">
+    </div>
+    <div class="chip-row">
+      <button
+        *ngFor="let status of statuses"
+        class="chip"
+        [class.selected]="status === selectedStatus"
+        (click)="selectedStatus = status">
+        {{ status }}
+      </button>
+    </div>
+  </div>
+
+  <div class="order-list">
+    <article class="panel order-card" *ngFor="let order of filteredWorkOrders">
+      <header class="order-head" (click)="toggleOrder(order.id)">
+        <div class="order-identity">
+          <span class="micro-label">{{ order.id }}</span>
+          <h2>{{ order.title }}</h2>
+          <span class="order-sub">
+            {{ order.esn }} · {{ order.operator }} · {{ order.facility }}
+          </span>
+        </div>
+        <div class="order-meta">
+          <span class="status-pill" [ngClass]="priorityClass(order.priority)">{{ order.priority }}</span>
+          <span class="status-pill" [ngClass]="statusClass(order.status)">{{ order.status }}</span>
+          <span class="due">Due {{ order.dueOn }}</span>
+          <mat-icon>{{ expandedId === order.id ? 'expand_less' : 'expand_more' }}</mat-icon>
+        </div>
+      </header>
+
+      <div class="order-progress">
+        <div class="progress-track">
+          <div class="progress-fill" [style.width.%]="taskProgress(order)"></div>
+        </div>
+        <span class="progress-value numeric">{{ taskProgress(order) }}% tasks complete</span>
+      </div>
+
+      <div class="order-detail" *ngIf="expandedId === order.id">
+        <div class="detail-facts">
+          <div>
+            <span class="micro-label">Raised by</span>
+            <strong>{{ order.raisedBy }}</strong>
+          </div>
+          <div>
+            <span class="micro-label">Raised on</span>
+            <strong>{{ order.raisedOn | date: 'dd MMM yyyy' }}</strong>
+          </div>
+          <div>
+            <span class="micro-label">Labour booked</span>
+            <strong class="numeric">{{ order.labourHours | engineHours }}</strong>
+          </div>
+        </div>
+
+        <table class="rr-table">
+          <thead>
+            <tr>
+              <th>Task card</th>
+              <th>Description</th>
+              <th>State</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let task of order.tasks">
+              <td>{{ task.reference }}</td>
+              <td>{{ task.description }}</td>
+              <td>
+                <span class="status-pill" [ngClass]="task.complete ? 'state-nominal' : 'state-no-data'">
+                  {{ task.complete ? 'Complete' : 'Open' }}
+                </span>
+              </td>
+            </tr>
+            <tr *ngIf="order.tasks.length === 0">
+              <td colspan="3" class="empty-cell">No task cards issued yet.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </article>
+
+    <div class="panel empty-state" *ngIf="filteredWorkOrders.length === 0">
+      <mat-icon>inbox</mat-icon>
+      <p>No work orders match the current filters.</p>
+    </div>
+  </div>
+</div>
