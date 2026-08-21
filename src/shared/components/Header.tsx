@@ -78,7 +78,10 @@ export function Header({ onToggleSidebar }: HeaderProps) {
                 <button
                   key={notification.id}
                   className={`rr-menu-item notification-item${notification.read ? '' : ' unread'}`}
-                  onClick={() => markAsRead(notification.id)}
+                  onClick={() => {
+                    markAsRead(notification.id);
+                    setOpenMenu(null);
+                  }}
                 >
                   <span className="notification-body">
                     <span className="notification-title">{notification.title}</span>
