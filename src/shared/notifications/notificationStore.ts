@@ -37,13 +37,9 @@ const initialNotifications: AppNotification[] = [
 ];
 
 export const notificationsStore = createStore(initialNotifications);
-export const unreadCountStore = createStore(
-  initialNotifications.filter((notification) => !notification.read).length
-);
 
 function setNotifications(notifications: AppNotification[]): void {
   notificationsStore.set(notifications);
-  unreadCountStore.set(notifications.filter((notification) => !notification.read).length);
 }
 
 export function push(
@@ -74,9 +70,11 @@ export function markAllAsRead(): void {
 }
 
 export function useNotifications() {
+  const notifications = useStore(notificationsStore);
+
   return {
-    notifications: useStore(notificationsStore),
-    unreadCount: useStore(unreadCountStore),
+    notifications,
+    unreadCount: notifications.filter((notification) => !notification.read).length,
     push,
     markAsRead,
     markAllAsRead
