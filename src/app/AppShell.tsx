@@ -14,7 +14,11 @@ export function AppShell() {
   const isLoginPage = location.pathname === '/login';
 
   if (isLoginPage) {
-    return <Router />;
+    return (
+      <div>
+        <Router />
+      </div>
+    );
   }
 
   if (isAuthenticated) {
@@ -32,5 +36,9 @@ export function AppShell() {
     );
   }
 
-  return <Router />;
+  return (
+    <div>
+      <Router />
+    </div>
+  );
 }
