@@ -16,6 +16,24 @@ describe('formatting helpers', () => {
     expect(formatDate(date, 'dd MMM HH:mm')).toBe('26 Mar 06:15');
   });
 
+  it('treats date-only input as a local date in negative-offset zones', () => {
+    vi.stubEnv('TZ', 'America/Los_Angeles');
+
+    expect(formatDate('2016-09-05', 'dd MMM yyyy')).toBe('05 Sep 2016');
+
+    vi.unstubAllEnvs();
+  });
+
+  it('preserves the timezone offset for Z datetimes', () => {
+    vi.stubEnv('TZ', 'America/Los_Angeles');
+
+    expect(formatDate('2016-09-05T00:00:00Z', 'dd MMM yyyy HH:mm')).toBe(
+      '04 Sep 2016 17:00'
+    );
+
+    vi.unstubAllEnvs();
+  });
+
   it('formats numeric values and empty values', () => {
     expect(currencyFormat(1452260)).toBe('$1,452,260');
     expect(currencyFormat(null)).toBe('-');

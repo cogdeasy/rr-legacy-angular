@@ -5,7 +5,18 @@ const monthNames = [
 const shortMonthNames = monthNames.map((month) => month.slice(0, 3));
 
 export function formatDate(value: string | Date, pattern: string): string {
-  const date = typeof value === 'string' ? new Date(value) : value;
+  const date = typeof value === 'string'
+    ? (() => {
+        const dateOnly = /^(\d{4})-(\d{2})-(\d{2})$/.exec(value);
+        return dateOnly
+          ? new Date(
+              Number(dateOnly[1]),
+              Number(dateOnly[2]) - 1,
+              Number(dateOnly[3])
+            )
+          : new Date(value);
+      })()
+    : value;
   const day = String(date.getDate()).padStart(2, '0');
   const month = date.getMonth();
   const year = date.getFullYear();
