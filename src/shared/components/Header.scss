@@ -1,0 +1,240 @@
+.app-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 64px;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 var(--spacing-lg);
+  background: var(--rr-white);
+  border-bottom: 1px solid var(--rr-hairline);
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.brand-mark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: var(--rr-blue);
+  color: var(--rr-white);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+
+.brand-text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.2;
+}
+
+.brand-title {
+  font-weight: 500;
+  font-size: 0.95rem;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.rr-icon-button,
+.user-button {
+  border: 0;
+  background: transparent;
+  color: var(--rr-ink);
+  cursor: pointer;
+}
+
+.rr-icon-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+}
+
+.rr-icon-button:hover,
+.user-button:hover {
+  background: var(--rr-pale);
+}
+
+.rr-menu-anchor {
+  position: relative;
+}
+
+.rr-menu {
+  position: absolute;
+  right: 0;
+  top: calc(100% + var(--spacing-sm));
+  min-width: 220px;
+  background: var(--rr-white);
+  border: 1px solid var(--rr-hairline);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-md);
+  z-index: 30;
+  overflow: hidden;
+}
+
+.notification-menu {
+  min-width: 360px;
+}
+
+.rr-badge {
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  min-width: 17px;
+  height: 17px;
+  padding: 0 4px;
+  border-radius: 999px;
+  background: var(--rr-act-now);
+  color: var(--rr-white);
+  font-size: 0.65rem;
+  line-height: 17px;
+  text-align: center;
+}
+
+.user-button {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  height: 44px;
+  border-radius: 999px;
+  padding: 0 var(--spacing-sm);
+}
+
+.avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: var(--rr-pale);
+  color: var(--rr-blue);
+  font-weight: 600;
+  font-size: 0.78rem;
+}
+
+.user-meta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  line-height: 1.2;
+}
+
+.user-name {
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+.user-role {
+  font-size: 0.7rem;
+  color: var(--rr-mist);
+}
+
+.notification-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--spacing-sm) var(--spacing-md);
+}
+
+.rr-menu-action,
+.rr-menu-item {
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+}
+
+.rr-menu-action {
+  color: var(--rr-blue);
+  font-size: 0.78rem;
+}
+
+.rr-divider {
+  height: 1px;
+  background: var(--rr-hairline);
+}
+
+.notification-item {
+  display: block;
+  width: 100%;
+  height: auto;
+  padding: var(--spacing-sm) var(--spacing-md);
+  text-align: left;
+  border: 0;
+  border-left: 3px solid transparent;
+  background: var(--rr-white);
+  cursor: pointer;
+
+  &:hover {
+    background: var(--rr-pale);
+  }
+
+  &.unread {
+    border-left-color: var(--rr-blue);
+  }
+}
+
+.notification-body {
+  display: flex;
+  flex-direction: column;
+  white-space: normal;
+  max-width: 320px;
+  line-height: 1.35;
+}
+
+.notification-title {
+  font-weight: 500;
+  font-size: 0.85rem;
+}
+
+.notification-message {
+  font-size: 0.78rem;
+  color: var(--rr-slate);
+}
+
+.notification-time {
+  font-size: 0.7rem;
+  color: var(--rr-mist);
+  margin-top: 2px;
+}
+
+.user-menu {
+  min-width: 170px;
+  padding: var(--spacing-xs) 0;
+}
+
+.rr-menu-item {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  width: 100%;
+  padding: 10px var(--spacing-md);
+  color: var(--rr-ink);
+  text-align: left;
+
+  &:hover {
+    background: var(--rr-pale);
+  }
+}
