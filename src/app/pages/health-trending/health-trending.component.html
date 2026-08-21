@@ -1,0 +1,109 @@
+<div class="page-header">
+  <div>
+    <span class="micro-label">Health trending</span>
+    <h1>Twelve month signal history</h1>
+    <p>Compare downlinked signals against the family baseline before committing a workscope.</p>
+  </div>
+</div>
+
+<app-loading-spinner [isLoading]="isLoading" message="Loading engine list…"></app-loading-spinner>
+
+<div class="trend-layout" *ngIf="!isLoading">
+  <aside class="panel engine-picker">
+    <span class="micro-label">Engine</span>
+    <button
+      *ngFor="let engine of engines"
+      class="picker-item"
+      [class.selected]="engine.esn === selectedEsn"
+      (click)="selectEngine(engine.esn)">
+      <span class="picker-esn">{{ engine.esn }}</span>
+      <span class="picker-sub">{{ engine.family }} · {{ engine.operator }}</span>
+      <span class="status-pill" [ngClass]="engine.state | stateClass">{{ engine.state }}</span>
+    </button>
+  </aside>
+
+  <section class="trend-main">
+    <div class="signal-tabs">
+      <button
+        *ngFor="let signal of signals"
+        class="signal-tab"
+        [class.selected]="signal.key === selectedSignal.key"
+        (click)="selectSignal(signal)">
+        {{ signal.label }}
+      </button>
+    </div>
+
+    <app-loading-spinner [isLoading]="isTrendLoading" message="Loading trend…"></app-loading-spinner>
+
+    <div *ngIf="!isTrendLoading && trend">
+      <div class="summary-row">
+        <div class="panel summary-card">
+          <span class="micro-label">Latest</span>
+          <strong class="numeric">{{ currentValue }} {{ selectedSignal.unit }}</strong>
+          <span class="summary-note">{{ selectedEngine?.esn }} · {{ selectedEngine?.operator }}</span>
+        </div>
+        <div class="panel summary-card">
+          <span class="micro-label">12 month change</span>
+          <strong class="numeric" [class.adverse]="deltaIsAdverse">
+            {{ twelveMonthDelta > 0 ? '+' : '' }}{{ twelveMonthDelta }} {{ selectedSignal.unit }}
+          </strong>
+          <span class="summary-note">
+            {{ deltaIsAdverse ? 'Moving away from the nominal band' : 'Within expected drift' }}
+          </span>
+        </div>
+        <div class="panel summary-card">
+          <span class="micro-label">Range</span>
+          <strong class="numeric">{{ troughValue }} – {{ peakValue }} {{ selectedSignal.unit }}</strong>
+          <span class="summary-note">Rolling minimum and maximum</span>
+        </div>
+      </div>
+
+      <div class="panel chart-panel">
+        <header class="chart-head">
+          <div>
+            <span class="micro-label">{{ selectedSignal.label }}</span>
+            <h2>{{ selectedEsn }}</h2>
+          </div>
+          <span class="chart-unit">Values in {{ selectedSignal.unit }}</span>
+        </header>
+
+        <svg
+          class="trend-chart"
+          [attr.viewBox]="'0 0 ' + chartWidth + ' ' + chartHeight"
+          preserveAspectRatio="xMidYMid meet"
+          role="img"
+          aria-label="Signal trend chart">
+          <path class="chart-area" [attr.d]="areaPath"></path>
+          <polyline class="chart-line" [attr.points]="polyline"></polyline>
+          <g *ngFor="let point of chartPoints">
+            <circle class="chart-dot" [attr.cx]="point.x" [attr.cy]="point.y" r="3.5"></circle>
+            <text class="chart-label" [attr.x]="point.x" [attr.y]="chartHeight - 8">{{ point.label }}</text>
+          </g>
+        </svg>
+      </div>
+
+      <div class="panel-flush">
+        <table class="rr-table">
+          <thead>
+            <tr>
+              <th>Month</th>
+              <th>EGT margin (degC)</th>
+              <th>Vibration (ips)</th>
+              <th>Oil (l/hr)</th>
+              <th>Change in {{ selectedSignal.label }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let point of points; let i = index">
+              <td>{{ point.date }}</td>
+              <td class="numeric">{{ point.egtMargin }}</td>
+              <td class="numeric">{{ point.vibrationIps }}</td>
+              <td class="numeric">{{ point.oilConsumptionLph }}</td>
+              <td class="numeric">{{ monthOnMonth(i) > 0 ? '+' : '' }}{{ monthOnMonth(i) }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+</div>

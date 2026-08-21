@@ -1,0 +1,67 @@
+<header class="app-header">
+  <div class="header-left">
+    <button mat-icon-button (click)="onToggleSidebar()" aria-label="Toggle navigation">
+      <mat-icon>menu</mat-icon>
+    </button>
+    <div class="brand">
+      <span class="brand-mark">RR</span>
+      <div class="brand-text">
+        <span class="brand-title">Engine Operations Portal</span>
+        <span class="brand-sub micro-label">Health &amp; MRO control</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="header-right">
+    <button
+      mat-icon-button
+      [matMenuTriggerFor]="notificationMenu"
+      [matBadge]="unreadCount$ | async"
+      [matBadgeHidden]="(unreadCount$ | async) === 0"
+      matBadgeColor="warn"
+      matBadgeSize="small"
+      aria-label="Notifications">
+      <mat-icon>notifications_none</mat-icon>
+    </button>
+
+    <mat-menu #notificationMenu="matMenu" class="notification-menu">
+      <div class="notification-header" (click)="$event.stopPropagation()">
+        <span class="micro-label">Notifications</span>
+        <button mat-button color="primary" (click)="markAllAsRead()">Mark all read</button>
+      </div>
+      <mat-divider></mat-divider>
+      <button
+        mat-menu-item
+        class="notification-item"
+        *ngFor="let notification of notifications$ | async"
+        [class.unread]="!notification.read"
+        (click)="markAsRead(notification.id)">
+        <div class="notification-body">
+          <span class="notification-title">{{ notification.title }}</span>
+          <span class="notification-message">{{ notification.message }}</span>
+          <span class="notification-time">{{ notification.timestamp | date: 'dd MMM, HH:mm' }}</span>
+        </div>
+      </button>
+    </mat-menu>
+
+    <button mat-button class="user-button" [matMenuTriggerFor]="userMenu">
+      <span class="avatar">{{ initials }}</span>
+      <span class="user-meta" *ngIf="currentUser">
+        <span class="user-name">{{ currentUser.firstName }} {{ currentUser.lastName }}</span>
+        <span class="user-role">{{ currentUser.role }}</span>
+      </span>
+      <mat-icon>expand_more</mat-icon>
+    </button>
+
+    <mat-menu #userMenu="matMenu">
+      <button mat-menu-item routerLink="/profile">
+        <mat-icon>person_outline</mat-icon>
+        <span>Profile</span>
+      </button>
+      <button mat-menu-item (click)="logout()">
+        <mat-icon>logout</mat-icon>
+        <span>Sign out</span>
+      </button>
+    </mat-menu>
+  </div>
+</header>
