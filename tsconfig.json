@@ -19,5 +19,5 @@
     "noUnusedParameters": true,
     "types": ["vite/client", "vitest/globals"]
   },
-  "include": ["src/main.tsx", "src/shared", "src/pages", "src/test", "vite.config.ts"]
+  "include": ["src/main.tsx", "src/app/**/*.tsx", "src/shared", "src/pages", "src/test", "vite.config.ts"]
 }

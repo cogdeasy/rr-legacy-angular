@@ -1,6 +1,5 @@
-import { lazy, Suspense } from 'react';
+import { lazy, Suspense, type ReactNode } from 'react';
 import { Navigate, Route, Routes } from 'react-router-dom';
-import { LoadingSpinner } from '../shared/components/LoadingSpinner';
 import { RequireAuth } from '../shared/components/RequireAuth';
 
 const LoginPage = lazy(() => import('../pages/LoginPage'));
@@ -11,8 +10,8 @@ const ShopVisitPlannerPage = lazy(() => import('../pages/ShopVisitPlannerPage'))
 const WorkOrdersPage = lazy(() => import('../pages/WorkOrdersPage'));
 const ProfilePage = lazy(() => import('../pages/ProfilePage'));
 
-function LazyPage({ children }: { children: React.ReactNode }) {
-  return <Suspense fallback={<LoadingSpinner isLoading message="Loading page…" />}>{children}</Suspense>;
+function LazyPage({ children }: { children: ReactNode }) {
+  return <Suspense fallback={null}>{children}</Suspense>;
 }
 
 export function Router() {
@@ -34,7 +33,7 @@ export function Router() {
         <Route path="/work-orders" element={<LazyPage><WorkOrdersPage /></LazyPage>} />
         <Route path="/profile" element={<LazyPage><ProfilePage /></LazyPage>} />
       </Route>
-      <Route path="" element={<Navigate to="/login" replace />} />
+      <Route path="/" element={<Navigate to="/login" replace />} />
       <Route path="*" element={<Navigate to="/login" replace />} />
     </Routes>
   );

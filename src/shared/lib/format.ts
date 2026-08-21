@@ -14,7 +14,9 @@ export function engineHours(value: number | null | undefined, unit = 'hrs'): str
   return `${formatted} ${unit}`;
 }
 
-export function stateClass(state: string): string {
+import { EngineState } from '../models/engine';
+
+export function stateClass(state: EngineState): string {
   switch (state) {
     case 'Act now':
       return 'state-act-now';
