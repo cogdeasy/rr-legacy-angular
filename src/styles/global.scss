@@ -218,7 +218,8 @@ table.rr-table {
   color: var(--rr-ink);
 }
 
-button.pill-cta {
+button.pill-cta,
+a.pill-cta {
   border-radius: 999px !important;
   padding: 0 22px !important;
   font-weight: 500;
