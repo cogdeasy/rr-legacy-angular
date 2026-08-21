@@ -40,7 +40,3 @@ testem.log
 # System files
 .DS_Store
 Thumbs.db
-
-# React (web/) build output and dependencies
-web/dist
-web/node_modules
