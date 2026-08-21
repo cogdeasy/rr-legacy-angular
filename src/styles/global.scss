@@ -227,6 +227,7 @@ table.rr-table {
   font-family: var(--font-primary);
   font-size: 0.86rem;
   font-weight: 500;
+  text-decoration: none;
   cursor: pointer;
 
   &:hover:not(:disabled) {
@@ -238,7 +239,7 @@ table.rr-table {
     cursor: default;
   }
 
-  &.variant-flat {
+  &.primary {
     background: var(--rr-blue);
     color: var(--rr-white);
 
@@ -252,7 +253,7 @@ table.rr-table {
     }
   }
 
-  &.variant-stroked {
+  &.stroked {
     border-color: var(--rr-hairline);
 
     &:hover:not(:disabled) {
@@ -261,7 +262,7 @@ table.rr-table {
   }
 }
 
-button.pill-cta {
+.pill-cta {
   border-radius: 999px;
   padding: 0 22px;
   font-weight: 500;
