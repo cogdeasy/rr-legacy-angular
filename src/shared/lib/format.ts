@@ -18,11 +18,11 @@ import { EngineState } from '../models/engine';
 
 export function stateClass(state: EngineState): string {
   switch (state) {
-    case 'Act now':
+    case EngineState.ActNow:
       return 'state-act-now';
-    case 'Watchlist':
+    case EngineState.Watchlist:
       return 'state-watchlist';
-    case 'Nominal':
+    case EngineState.Nominal:
       return 'state-nominal';
     default:
       return 'state-no-data';
