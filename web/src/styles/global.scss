@@ -1,0 +1,343 @@
+/* Design system ported from the Angular application's src/styles.scss.
+   White canvas only: semantic colour is reserved for engine state and work order priority. */
+
+:root {
+  /* Rolls-Royce brand */
+  --rr-blue: #10069f;
+  --rr-blue-dark: #0b0484;
+  --rr-blue-light: #4a3fd1;
+  --rr-ink: #1a1a1a;
+  --rr-slate: #5b6270;
+  --rr-mist: #8a909c;
+  --rr-hairline: #dcdee5;
+  --rr-pale: #f2f3f8;
+  --rr-white: #ffffff;
+
+  /* Operational state */
+  --rr-act-now: #c8102e;
+  --rr-watchlist: #d98200;
+  --rr-nominal: #007a53;
+  --rr-no-data: #8a909c;
+  --rr-info: #0073cf;
+
+  /* Non-semantic chart series (never used to convey state) */
+  --rr-series-1: #10069f;
+  --rr-series-2: #4a3fd1;
+  --rr-series-3: #7d76e0;
+  --rr-series-4: #a9a4ec;
+  --rr-series-5: #cfccf6;
+
+  /* Spacing */
+  --spacing-xs: 4px;
+  --spacing-sm: 8px;
+  --spacing-md: 16px;
+  --spacing-lg: 24px;
+  --spacing-xl: 32px;
+  --spacing-xxl: 48px;
+
+  /* Radius */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 3px rgba(16, 6, 159, 0.06);
+  --shadow-md: 0 4px 12px rgba(16, 6, 159, 0.08);
+  --shadow-lg: 0 8px 24px rgba(16, 6, 159, 0.12);
+
+  /* Typography */
+  --font-primary: 'Inter', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  font-family: var(--font-primary);
+  color: var(--rr-ink);
+  background: var(--rr-white);
+  font-size: 14px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-weight: 500;
+  color: var(--rr-ink);
+  margin: 0 0 var(--spacing-sm);
+  letter-spacing: -0.01em;
+}
+
+h1 {
+  font-size: 1.75rem;
+}
+
+h2 {
+  font-size: 1.25rem;
+}
+
+h3 {
+  font-size: 1rem;
+}
+
+a {
+  color: var(--rr-blue);
+}
+
+.micro-label {
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 0.68rem;
+  font-weight: 600;
+  color: var(--rr-mist);
+}
+
+.panel {
+  background: var(--rr-white);
+  border: 1px solid var(--rr-hairline);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-lg);
+}
+
+.panel-flush {
+  background: var(--rr-white);
+  border: 1px solid var(--rr-hairline);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+
+.hero-gradient {
+  background: linear-gradient(120deg, var(--rr-blue) 0%, var(--rr-blue-dark) 60%, #060135 100%);
+  color: var(--rr-white);
+}
+
+.numeric {
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+}
+
+.page-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--spacing-md);
+  margin-bottom: var(--spacing-lg);
+  flex-wrap: wrap;
+
+  p {
+    margin: 0;
+    color: var(--rr-slate);
+  }
+}
+
+.status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 2px 10px;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  border: 1px solid transparent;
+
+  &.state-act-now {
+    color: var(--rr-act-now);
+    border-color: rgba(200, 16, 46, 0.35);
+    background: rgba(200, 16, 46, 0.07);
+  }
+
+  &.state-watchlist {
+    color: var(--rr-watchlist);
+    border-color: rgba(217, 130, 0, 0.35);
+    background: rgba(217, 130, 0, 0.08);
+  }
+
+  &.state-nominal {
+    color: var(--rr-nominal);
+    border-color: rgba(0, 122, 83, 0.3);
+    background: rgba(0, 122, 83, 0.07);
+  }
+
+  &.state-info {
+    color: var(--rr-info);
+    border-color: rgba(0, 115, 207, 0.3);
+    background: rgba(0, 115, 207, 0.07);
+  }
+
+  &.state-no-data {
+    color: var(--rr-no-data);
+    border-color: var(--rr-hairline);
+    background: var(--rr-pale);
+  }
+}
+
+table.rr-table {
+  width: 100%;
+  border-collapse: collapse;
+
+  th {
+    text-align: left;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 0.68rem;
+    font-weight: 600;
+    color: var(--rr-mist);
+    padding: 10px var(--spacing-md);
+    border-bottom: 1px solid var(--rr-hairline);
+    white-space: nowrap;
+  }
+
+  td {
+    padding: 12px var(--spacing-md);
+    border-bottom: 1px solid var(--rr-hairline);
+    color: var(--rr-ink);
+  }
+
+  tbody tr:hover {
+    background: var(--rr-pale);
+  }
+}
+
+/* Control primitives replacing the Angular Material button, menu, badge, tooltip and
+   spinner usages. Angular Material only ever supplied chrome, never layout. */
+
+.rr-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-sm);
+  height: 36px;
+  padding: 0 var(--spacing-md);
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--rr-blue);
+  font-family: var(--font-primary);
+  font-size: 0.86rem;
+  font-weight: 500;
+  cursor: pointer;
+
+  &:hover:not(:disabled) {
+    background: rgba(16, 6, 159, 0.06);
+  }
+
+  &:disabled {
+    color: var(--rr-mist);
+    cursor: default;
+  }
+
+  &.variant-flat {
+    background: var(--rr-blue);
+    color: var(--rr-white);
+
+    &:hover:not(:disabled) {
+      background: var(--rr-blue-dark);
+    }
+
+    &:disabled {
+      background: var(--rr-pale);
+      color: var(--rr-mist);
+    }
+  }
+
+  &.variant-stroked {
+    border-color: var(--rr-hairline);
+
+    &:hover:not(:disabled) {
+      border-color: var(--rr-blue);
+    }
+  }
+}
+
+button.pill-cta {
+  border-radius: 999px;
+  padding: 0 22px;
+  font-weight: 500;
+}
+
+.rr-icon-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  width: 40px;
+  height: 40px;
+  border: none;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--rr-slate);
+  cursor: pointer;
+
+  &:hover {
+    background: var(--rr-pale);
+  }
+}
+
+.rr-badge {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  min-width: 16px;
+  height: 16px;
+  padding: 0 4px;
+  border-radius: 999px;
+  background: var(--rr-act-now);
+  color: var(--rr-white);
+  font-size: 0.62rem;
+  font-weight: 600;
+  line-height: 16px;
+  text-align: center;
+}
+
+.rr-menu {
+  position: absolute;
+  top: calc(100% + 4px);
+  right: 0;
+  min-width: 200px;
+  z-index: 40;
+  background: var(--rr-white);
+  border: 1px solid var(--rr-hairline);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg);
+  padding: var(--spacing-xs) 0;
+  overflow: hidden;
+}
+
+.rr-menu-item {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  width: 100%;
+  padding: 10px var(--spacing-md);
+  border: none;
+  background: transparent;
+  color: var(--rr-ink);
+  font-family: var(--font-primary);
+  font-size: 0.86rem;
+  text-align: left;
+  text-decoration: none;
+  cursor: pointer;
+
+  &:hover {
+    background: var(--rr-pale);
+  }
+}
+
+.rr-divider {
+  height: 1px;
+  border: none;
+  margin: var(--spacing-xs) 0;
+  background: var(--rr-hairline);
+}

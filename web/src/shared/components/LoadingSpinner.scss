@@ -1,0 +1,31 @@
+.spinner-overlay {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 48px;
+}
+
+.spinner-container {
+  text-align: center;
+}
+
+.spinner-container p {
+  margin-top: 16px;
+  color: var(--rr-slate);
+  font-size: 0.9rem;
+}
+
+.spinner {
+  display: block;
+  margin: 0 auto;
+  border: 3px solid var(--rr-pale);
+  border-top-color: var(--rr-blue);
+  border-radius: 50%;
+  animation: spinner-rotate 900ms linear infinite;
+}
+
+@keyframes spinner-rotate {
+  to {
+    transform: rotate(360deg);
+  }
+}
