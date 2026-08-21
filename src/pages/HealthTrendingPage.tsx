@@ -58,7 +58,7 @@ export default function HealthTrendingPage() {
   const [selectedEsn, setSelectedEsn] = useState('');
   const [selectedSignal, setSelectedSignal] = useState<SignalOption>(signals[0]);
   const [trend, setTrend] = useState<EngineTrend | null>(null);
-  const [isTrendLoading, setIsTrendLoading] = useState(false);
+  const [isTrendLoading, setIsTrendLoading] = useState(true);
 
   useEffect(() => {
     if (engines && engines.length > 0 && selectedEsn === '') {
