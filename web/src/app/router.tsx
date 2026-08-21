@@ -3,7 +3,6 @@ import { Navigate, createBrowserRouter } from 'react-router-dom';
 import { LoadingSpinner } from '../shared/components/LoadingSpinner';
 import { RequireAuth } from '../shared/components/RequireAuth';
 import { AppShell } from './AppShell';
-import { LegacyAngularRoute } from './LegacyAngularRoute';
 
 const lazyPage = (load: () => Promise<{ default: ComponentType }>) => {
   const Page = lazy(load);
@@ -14,10 +13,11 @@ const lazyPage = (load: () => Promise<{ default: ComponentType }>) => {
   );
 };
 
-/**
- * Route map mirroring `app-routing.module.ts`. Pages already migrated render React;
- * the rest still render the Angular route through the strangler-fig bridge.
- */
+const protectedPage = (load: () => Promise<{ default: ComponentType }>) => (
+  <RequireAuth>{lazyPage(load)}</RequireAuth>
+);
+
+/** Route map mirroring `app-routing.module.ts`; every route but /login is guarded. */
 export const router = createBrowserRouter([
   {
     element: <AppShell />,
@@ -25,27 +25,27 @@ export const router = createBrowserRouter([
       { path: '/login', element: lazyPage(() => import('../pages/LoginPage')) },
       {
         path: '/dashboard',
-        element: <RequireAuth>{<LegacyAngularRoute />}</RequireAuth>
+        element: protectedPage(() => import('../pages/DashboardPage'))
       },
       {
         path: '/engine-explorer',
-        element: <RequireAuth>{<LegacyAngularRoute />}</RequireAuth>
+        element: protectedPage(() => import('../pages/EngineExplorerPage'))
       },
       {
         path: '/health-trending',
-        element: <RequireAuth>{<LegacyAngularRoute />}</RequireAuth>
+        element: protectedPage(() => import('../pages/HealthTrendingPage'))
       },
       {
         path: '/shop-visit-planner',
-        element: <RequireAuth>{<LegacyAngularRoute />}</RequireAuth>
+        element: protectedPage(() => import('../pages/ShopVisitPlannerPage'))
       },
       {
         path: '/work-orders',
-        element: <RequireAuth>{<LegacyAngularRoute />}</RequireAuth>
+        element: protectedPage(() => import('../pages/WorkOrdersPage'))
       },
       {
         path: '/profile',
-        element: <RequireAuth>{lazyPage(() => import('../pages/ProfilePage'))}</RequireAuth>
+        element: protectedPage(() => import('../pages/ProfilePage'))
       },
       { path: '/', element: <Navigate to="/login" replace /> },
       { path: '*', element: <Navigate to="/login" replace /> }
