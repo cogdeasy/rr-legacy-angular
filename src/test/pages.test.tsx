@@ -148,6 +148,8 @@ describe('work-order form', () => {
     expect(notificationsStore.get()[0].title).toMatch(/raised$/);
     expect(notificationsStore.get()[0].message).toContain('ESN-10241');
 
-    notificationsStore.set(notificationsBefore);
+    act(() => {
+      notificationsStore.set(notificationsBefore);
+    });
   });
 });
