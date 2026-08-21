@@ -1,0 +1,36 @@
+import { useSyncExternalStore } from 'react';
+
+export interface Store<T> {
+  get(): T;
+  set(value: T): void;
+  subscribe(listener: () => void): () => void;
+}
+
+/** Minimal observable value replacing the RxJS `BehaviorSubject` the services used. */
+export function createStore<T>(initial: T): Store<T> {
+  let value = initial;
+  const listeners = new Set<() => void>();
+
+  return {
+    get: () => value,
+    set: next => {
+      value = next;
+      listeners.forEach(listener => listener());
+    },
+    subscribe: listener => {
+      listeners.add(listener);
+      return () => listeners.delete(listener);
+    }
+  };
+}
+
+export function useStore<T>(store: Store<T>): T {
+  return useSyncExternalStore(store.subscribe, store.get, store.get);
+}
+
+/** Simulated network latency, matching `of(...).pipe(delay(ms))` in the Angular services. */
+export function delay<T>(value: T, ms: number): Promise<T> {
+  return new Promise(resolve => {
+    setTimeout(() => resolve(value), ms);
+  });
+}
