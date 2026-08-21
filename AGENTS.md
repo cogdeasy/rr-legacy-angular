@@ -1,35 +1,54 @@
 # RR Engine Operations Portal — agent guide
 
-Angular 13.3.11 application for Rolls-Royce engine health and MRO operations.
+React 18 and Vite application for Rolls-Royce engine health and MRO operations.
 
 ## Setup
 
 ```bash
-nvm use 16
+source ~/.nvm/nvm.sh && nvm use 22
 npm install
 ```
 
-Node 16 is required; the Angular 13 toolchain does not run on current Node LTS releases.
+## Checks
 
-## Checks to run before opening a PR
+Run these checks before handing work back:
 
 ```bash
 npm run lint
 npm run build
-CHROME_BIN=$(which google-chrome) npx ng test --watch=false --browsers=ChromeHeadlessNoSandbox
+npm test
 ```
 
-## Conventions
+Use the Vite server for browser checks:
 
-- One feature per folder under `src/app/pages/<feature>/`, each with its own `NgModule` that
-  declares the component, imports `SharedModule` and registers `RouterModule.forChild`.
-- Register the feature in `app-routing.module.ts` with `loadChildren` and `AuthGuard`.
-- Shared services, models, pipes and layout components live under `src/app/shared/`.
-- Services expose `Observable` APIs backed by `BehaviorSubject`/`of(...).pipe(delay(...))`; domain
-  data is deterministic and in memory — do not add network calls.
-- Templates use Angular Material only for icons, buttons, menus, badges, tooltips and spinners;
-  layout and data presentation use the global classes in `src/styles.scss`.
-- Use the design tokens (`--rr-*`) rather than literal colours, and the shared `.panel`,
-  `.page-header`, `.micro-label`, `.status-pill`, `.rr-table` and `.numeric` classes.
-- White canvas only. Semantic colour is reserved for engine state and work order priority.
-- TypeScript is strict, and strict Angular templates are enabled. No `any`.
+```bash
+npm start
+```
+
+It serves the portal at `http://localhost:4200`.
+
+## React conventions
+
+- Use functional components and React hooks.
+- Keep route-level components in `src/pages/` with page-specific SCSS beside
+  the component.
+- Define routes in `src/app/router.tsx` with React Router and preserve the
+  existing protected-route behavior.
+- Use the `createStore`/`useStore` pattern in `src/shared/lib/store.ts` for
+  shared state. Do not add RxJS or another state library.
+- Keep service data deterministic and in memory. Do not add network calls.
+- Keep charts as hand-rolled inline SVG. Do not add a chart library or UI kit.
+- Use `--rr-*` design tokens and shared primitives instead of literal colours.
+- Preserve the white canvas. Semantic colours are reserved for engine state and
+  work-order priority.
+- Preserve existing class names, DOM structure, strings, numbers and artificial
+  delays when porting behavior.
+- TypeScript is strict. Do not use `any`.
+
+## Shared styling
+
+Prefer the shared `.panel`, `.page-header`, `.micro-label`, `.status-pill`,
+`.rr-table` and `.numeric` classes. Add a page selector to the relevant page
+SCSS only when a style is not shared. Keep anchor-rendered button controls
+visually equivalent to button-rendered controls without changing intentional
+inline link styling.
