@@ -1,92 +1,103 @@
 ---
 name: testing-rr-portal
-description: Browser-level testing of the RR Engine Operations Portal (Angular 13) — how to boot the app, sign in past the mocked auth, reset in-memory state, and exercise each page's deterministic data.
+description: Browser and component testing of the RR Engine Operations Portal (React 18 + Vite) with mocked authentication and deterministic in-memory data.
 ---
 
 # Testing the RR Engine Operations Portal
 
-Angular 13.3.11 SPA with mocked auth and deterministic in-memory data. No backend, no
-network calls — every number on screen is derived from `src/app/shared/services/fleet.service.ts`.
+React 18 and Vite SPA with mocked auth and deterministic in-memory data. There
+is no backend or network call. Vitest and React Testing Library cover stores,
+services, routes and page behavior.
 
 ## Boot the app
 
 ```bash
-source ~/.nvm/nvm.sh && nvm use 16   # Angular 13 will not run on modern Node LTS
+source ~/.nvm/nvm.sh && nvm use 22
 cd /path/to/rr-legacy-angular
-npm start                            # http://localhost:4200
+npm install
+npm start
 ```
 
-First compile takes ~30-60s. Wait for `Compiled successfully` before driving the browser.
+The Vite development server runs at `http://localhost:4200`. Wait for the
+server to be available before driving the browser.
+
+## Automated checks
+
+```bash
+npm run lint
+npm run build
+npm test
+```
+
+Vitest runs in jsdom through `src/test/setup.ts`. Prefer fake timers or awaited
+React Testing Library assertions over real waits for service delays.
 
 ## Signing in
 
-Auth is mocked in `src/app/shared/services/auth.service.ts`:
+Authentication is provided by `src/shared/auth/authStore.ts`:
 
-- **Any** email + **any** non-empty password is accepted after a ~1.2s artificial delay.
-- Submitting with either field empty shows `Enter your Rolls-Royce email and password`.
-- The session is persisted to `localStorage` under key `rr_portal_auth`.
+- Any email and non-empty password are accepted after a 1.2 second mocked
+  delay.
+- Submitting with either field empty shows
+  `Enter your Rolls-Royce email and password`.
+- The session is persisted in `localStorage` under `rr_portal_auth`.
+- `RequireAuth` redirects unauthenticated routes to `/login`.
 
-To skip the login page in a fresh browser, seed that key directly, or just log in through the
-UI (preferred when recording, since it is one form).
+For browser checks, sign in through the form when recording behavior. To force
+a logged-out state, use the header user menu → Sign out or clear the storage
+key.
 
-To force a logged-out state, clear the key or use the header user menu → Sign out. `AuthGuard`
-on every route bounces unauthenticated direct navigation back to `/login`.
+## Coverage expectations
 
-## Resetting state between runs
+Tests should cover:
 
-All mutations (new work orders, profile edits, notification badge) live in `BehaviorSubject`s
-in memory only. A **full page reload wipes them** — reload rather than trying to undo edits.
-Note this also means a profile edit (e.g. renaming the user) will keep showing in the header
-and in the dashboard greeting until you reload.
+- auth store login/logout and localStorage persistence;
+- root and wildcard route redirects and protected routes;
+- deterministic fleet service data and trend generation;
+- shop-visit estimate cost, turnaround and restored-margin calculations;
+- date and numeric format helpers;
+- work-order required fields, title/findings minimum lengths and email format;
+- successful work-order prepending and notification push;
+- at least one smoke render for every route-level page.
 
-## Per-page notes
+Health trending uses a hand-rolled inline SVG chart. Verify signal or engine
+changes by asserting the polyline `points` attribute or comparing screenshots;
+do not replace it with a chart library.
 
-- **Every route shows a spinner first** (`Loading fleet health…`, `Loading engine register…`,
-  etc.) because services use `of(...).pipe(delay(...))`. Always re-read the DOM after a
-  navigation; asserting immediately will catch the spinner, not the content.
-- **Health trending**: the chart is a hand-rolled inline `<svg>` polyline, not a chart library.
-  To prove it re-renders per signal/engine, compare the `points` attribute of the polyline (or
-  screenshot the chart) before and after switching — a visual glance is not enough.
-- **Shop visit planner**: cost/turnaround/restored-margin are pure functions of the selected
-  workscope items × facility multiplier. Compute expected values from
-  `fleet.service.ts` rather than trusting the UI. The projection line should equal
-  the engine's current margin + restored margin.
-- **Work orders**: the "Raise work order" form validates required fields, a min length on
-  title/findings, and email format. Newly created orders are prepended to the list and push a
-  header bell notification.
+## Browser route checks
 
-## Browser automation gotchas
+After authenticating, smoke-check:
 
-- Typing into an already-populated input **appends**. Always `Control+a` then `Delete` before
-  typing a replacement value, or your assertions will read concatenated junk.
-- The date input accepts `MM/DD/YYYY` keystrokes and stores `YYYY-MM-DD`.
+```text
+/dashboard
+/engine-explorer
+/health-trending
+/shop-visit-planner
+/work-orders
+/profile
+```
 
-## Responsive testing
+Wait for each page's specific loading caption to resolve before asserting
+service-backed content. For work orders, verify that a successful submission
+appears first in the list and creates a notification in the header bell.
 
-SCSS breakpoints are at **900px** (app shell / sidebar becomes an overlay drawer), **1100px**
-and **1200px** (page grids collapse to one column). There is no 768px breakpoint, so testing at
-768 and at ~440 exercises the same rules.
+## Responsive checks
 
-If `wmctrl` reports `Cannot get client list properties`, there is no reachable window manager
-and you cannot resize the Chrome window; use the browser tool's mobile-emulation toggle instead
-(it emulates roughly 390-450px wide). Verify overflow numerically rather than by eye:
+SCSS breakpoints are at 900px (shell/sidebar), 1100px and 1200px (page grids).
+There is no 768px breakpoint. If a window manager is unavailable, use browser
+mobile emulation and check horizontal overflow numerically:
 
 ```js
 JSON.stringify({vw: innerWidth, docScroll: document.documentElement.scrollWidth})
 ```
 
-Equal values mean no horizontal overflow. Screenshots taken under mobile emulation have a black
-band on the right where the emulated viewport is narrower than the capture canvas — that is an
-artifact, not a layout bug.
+Equal values indicate no horizontal overflow.
 
 ## Expected console output
 
-A clean run logs exactly two messages and **zero** errors or warnings:
-
-1. `Angular is running in development mode.`
-2. `[webpack-dev-server] Live Reloading enabled.`
-
-Anything else is a regression.
+The React app should produce zero application errors or warnings. Vite's
+connection message and React DevTools informational message are expected during
+development.
 
 ## Devin Secrets Needed
 
